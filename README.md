@@ -39,9 +39,10 @@ This file is part of a larger project aiming to provide specialised tool to auto
 ## Example
 The following example creates a interpolator for CL (lift coeffecient) of an airfoil from angle of attack (-90deg to 90deg) and reynolds number (100,000 to 2,000,000).
 
-Following is a 3D plot representing the data collected from CFD simulations.
+Following is a 3D plot representing the training data collected from 5000 CFD simulations of NACA 65(2)-415 airfoil.
 
 Following is the interpolator code which allows us to find accurate estimate of CL at a new angle of attack and reynolds number.
+
 ```cpp
 #include <fstream>
 #include <chrono>
@@ -103,4 +104,11 @@ int main () {
   float new_reynolds_number = 1000000.0f;
   test.get_CL_at(new_alpha, new_reynolds_number);
 }
+```
+
+Following is the output of the above example:
+
+```bash
+  CL: 0.892368
+  Time taken by calc interpolation: 35 microseconds
 ```
