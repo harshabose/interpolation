@@ -88,8 +88,8 @@ struct interpolate_fixture_ {
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-    std::cout << result << std::endl;
-    std::cout << "Time taken by calc interpolation: " << duration.count() << " microseconds" << std::endl;
+    std::cout << "CL: " << result << std::endl;
+    std::cout << "Time taken to calc interpolation: " << duration.count() << " microseconds" << std::endl;
     return result;
     }
 
@@ -110,5 +110,5 @@ Following is the output of the above example:
 
 ```bash
 CL: 0.892368
-Time taken by calc interpolation: 35 microseconds
+Time taken to calc interpolation: 35 microseconds
 ```
