@@ -109,6 +109,6 @@ int main () {
 Following is the output of the above example:
 
 ```bash
-  CL: 0.892368
-  Time taken by calc interpolation: 35 microseconds
+CL: 0.892368
+Time taken by calc interpolation: 35 microseconds
 ```
