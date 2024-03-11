@@ -18,8 +18,8 @@
 #include <queue>
 #include <utility>
 
-#include "eigen3/Eigen/Core"
-#include "eigen3/Eigen/Dense"
+#include "eigen/Eigen/Core"
+#include "eigen/Eigen/Dense"
 
 /**
  * @brief Compile-time check if the given type is a std::vector<float> or not.
