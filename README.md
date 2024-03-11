@@ -11,7 +11,7 @@ This file is part of a larger project aiming to provide specialised tool to auto
 
 - Optimised to work with large data sets and multi-variable data.
 - Memory effecient impletation of data-set storing and cache management.
-- Uses Eigen C++ library to perform mathematical complex operations (a copy of Eigen3 is provided)
+- Uses Eigen C++ library to perform mathematical complex operations (a copy of Eigen 3.4 is provided)
 - Offers multiple methods for adding training data:
   - Using Eigen vectors for function and variable data.
   - Using variadic arguments for variable data with various input formats (Eigen vectors, std::vector<float>, or std::array<float, N>).
