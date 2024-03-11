@@ -5,7 +5,7 @@ interpolate.h is a C++ header file designed to simplify interpolation tasks in s
 
 ## Motivation
 
-This file is part of a larger project aiming to provide specialised tool to automate pre-conceptual and conceptual design stages of an aircraft or Unmanned Aerial Vehicle (UAV). Check out other tools in my profile including tools  propulsion system layout analysis, parametric analysis, optimisation and parallel-computing techniques. This file is developed to aid rapid calculation of aerodynamic data of a airfoil at any given angle of attack, reynolds number and mach number. An example case is given below.
+This file is part of a larger project aiming to provide specialised tool to automate pre-conceptual and conceptual design stages of an aircraft or Unmanned Aerial Vehicle (UAV). Check out other tools in my profile including tools  propulsion system layout analysis, parametric analysis, optimisation and parallel-computing techniques. This file is developed to aid rapid calculation of aerodynamic data of an airfoil at any given angle of attack, reynolds number and mach number. An example case is given below.
 
 ## Key Feature
 
