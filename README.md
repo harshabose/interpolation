@@ -93,7 +93,7 @@ struct interpolate_fixture_ {
     }
 
   std::vector<float> CL, Re, alpha;
-  const std::string json_data_path = "/Users/harsha/Desktop/Conceptual/assets/airfoil_data/naca652415_training.json";
+  const std::string json_data_path = "assets/airfoil_data/naca652415_training.json";
   CONCEPTUAL_INTERPOLATE_H::interpolate<2, 5000, 5> interpolator = CONCEPTUAL_INTERPOLATE_H::interpolate<2, 5000, 5>();
 }
 
