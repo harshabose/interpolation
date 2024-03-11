@@ -10,7 +10,7 @@ This file is part of a larger project aiming to provide specialised tool to auto
 ## Key Feature
 
 - Optimised to work with large data sets and multi-variable data.
-- Memory efficient implementation of data-set storing and cache management.
+- Memory efficient implementation of data-set storage and cache management.
 - Uses Eigen C++ library to perform mathematical complex operations (a copy of Eigen 3.4 is provided)
 - Offers multiple methods for adding training data:
   - Using Eigen vectors for function and variable data.
