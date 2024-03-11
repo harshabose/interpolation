@@ -57,6 +57,7 @@ Following is the interpolator code which allows us to find accurate estimate of 
 #include "interpolation/json/include/nlohmann/json.hpp"
 
 struct interpolate_fixture_ {
+  interpolate_fixture_ () {
     std::ifstream operational_file(this->json_data_path, std::ios::ate);
 
     if (!operational_file.is_open() && operational_file.tellg() != 0) {
@@ -96,7 +97,7 @@ struct interpolate_fixture_ {
     std::cout << "CL: " << result << std::endl;
     std::cout << "Time taken to calc interpolation: " << duration.count() << " microseconds" << std::endl;
     return result;
-    }
+  }
 
   std::vector<float> CL, Re, alpha;
   const std::string json_data_path = "assets/airfoil_data/naca652415_training.json";
