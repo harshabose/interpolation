@@ -23,6 +23,6 @@ This file is part of a larger project aiming to provide specialised tool to auto
 
 ## How to Use?
 It is a header file, so simply include the file in your project.
-```
+```cpp
 #include "interpolate.h"
 ```
