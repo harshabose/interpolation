@@ -17,7 +17,7 @@ This file is part of a larger project aiming to provide specialised tool to auto
   - Using variadic arguments for variable data with various input formats (Eigen vectors, std::vector<float>, or std::array<float, N>).
 - Provides different eval_at functions to evaluate the function at a specified point using k-nearest points average interpolation:
   - Input point as an Eigen vector.
-  - nput point as a compatible container (like std::vector<float> or std::array<float, N>).
+  - Input point as a compatible container (like std::vector<float> or std::array<float, N>).
   - Input point provided directly as variadic arguments (must be floating-point values).
 - Implements different algorithms for finding the mean of the k-nearest neighbors based on data size for efficiency
 
