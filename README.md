@@ -5,12 +5,12 @@ interpolate.h is a C++ header file designed to simplify interpolation tasks in s
 
 ## Motivation
 
-This file is part of a larger project aiming to provide specialised tool to automate pre-conceptual and conceptual design stages of an aircraft or Unmanned Aerial Vehicle (UAV). Checkout other tools in my profile and include tools for propulsion system layout analysis, parametric analysis, optimisation and parallel-computing techniques. This file is developed to aid rapid calculation of aerodynamic data of a airfoil at any given angle of attack, reynolds number and mach number. An example case is given below.
+This file is part of a larger project aiming to provide specialised tool to automate pre-conceptual and conceptual design stages of an aircraft or Unmanned Aerial Vehicle (UAV). Check out other tools in my profile including tools  propulsion system layout analysis, parametric analysis, optimisation and parallel-computing techniques. This file is developed to aid rapid calculation of aerodynamic data of a airfoil at any given angle of attack, reynolds number and mach number. An example case is given below.
 
 ## Key Feature
 
 - Optimised to work with large data sets and multi-variable data.
-- Memory effecient impletation of data-set storing and cache management.
+- Memory efficient implementation of data-set storing and cache management.
 - Uses Eigen C++ library to perform mathematical complex operations (a copy of Eigen 3.4 is provided)
 - Offers multiple methods for adding training data:
   - Using Eigen vectors for function and variable data.
@@ -118,3 +118,8 @@ Following is the output of the above example:
 CL: 0.892368
 Time taken to calc interpolation: 35 microseconds
 ```
+
+## Additional Notes
+- The code uses Eigen C++ library, which is a header-only library, but careful consideration needs to be made to the location of installation of Eigen. By default, when cloning this repo, Eigen is added to your directory. If you prefer a local Eigen build, you can change the #include path in the 'interpolate.h' file.
+- C++20 or higher is required. The header files uses features, such as templated lambda functions, concepts, and other which are available only in C++20 or higher.
+- The code also comes with detailed documentation in the header file. Hover over any method or variable to see the documentation.
