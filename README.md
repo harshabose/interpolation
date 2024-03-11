@@ -43,7 +43,9 @@ This file is part of a larger project aiming to provide specialised tool to auto
 ## Example
 The following example creates a interpolator for CL (lift coeffecient) of an airfoil from angle of attack (-90deg to 90deg) and reynolds number (100,000 to 2,000,000).
 
-  ![Figure_1](https://github.com/harshabose/interpolation/assets/127072856/39b58c95-0344-45c3-8060-a8a238461033)
+<p align="center">
+  <img src="[http://some_place.com/image.png](https://github.com/harshabose/interpolation/assets/127072856/39b58c95-0344-45c3-8060-a8a238461033))" />
+</p>
 
 Following is a 3D plot representing the training data collected from 5000 CFD simulations of NACA 65(2)-415 airfoil (included in the repo). They are in the form of JSON data. To parse this JSON data, we will use nlohmann/json library. This library is also included as a git submodule.
 
