@@ -22,7 +22,12 @@ This file is part of a larger project aiming to provide specialised tool to auto
 - Implements different algorithms for finding the mean of the k-nearest neighbors based on data size for efficiency
 
 ## How to Use?
-It is a header file, so simply include the file in your project.
-```cpp
-#include "interpolate.h"
-```
+- It is a header file, so simply include the file in your project.
+  ```cpp
+  #include "interpolate.h"
+  ```
+- Define the template parameters based on your specific needs.
+- Create an instance of the interpolate class:
+  ```cpp
+  template <std::size_t dimension, std::size_t max_training_data_size, std::size_t mean_size> interpolate<dimension, max_training_data_size, mean_size> interpolator;
+  ```
