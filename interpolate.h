@@ -398,16 +398,17 @@ private:
 
 
     /**
-     * @brief Finds the mean of first `mean_size` minimum values in `IN_VALS` using `std::nth_element`
+     * @brief Calculate the mean of the first `mean_size` elements in `IN_FUNC` based on the minimum valued indices of
+     * `IN_VALS` using `std::nth_element`
      *
-     * @details This function calculates the mean of the first `mean_size` minimum values in the input vector @p IN_VALS
-     * using a std::nth_element method for efficient retrieval of the minimum values. The implementation is tailored
-     * for a large data sizes (max_training_data_size).
+     * @details This function calculates the mean of the input vector @p IN_FUNC based on the of the first `mean_size`
+     * minimum values in @p IN_VALS using a std::nth_element method for efficient retrieval of the minimum values.
+     * The implementation is tailored for a large data sizes (max_training_data_size).
      *
-     * @param [in] IN_VALS The input vector of values to find the mean of. The size should `max_training_data_size` and needs
-     * to available in compile time.
-     *
-     * @return mean of the first `mean_size` minimum values in the input vector.
+     * @param [in, out] IN_VALS Input vector containing values for index calculations. The size should
+     * `max_training_data_size` and needs to available in compile time.
+     * @param [in] IN_FUNC Input vector for which the mean is calculated based on selected indices.
+     * @return The mean value of the `IN_FUNC` elements whose indices are first `mean_size` minimum valued in IN_VALS.
      *
      * @throw None
      *
