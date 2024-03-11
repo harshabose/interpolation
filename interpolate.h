@@ -90,6 +90,12 @@ public:
 
 
     /**
+     * @brief Virtual destructor for the interpolate class.
+     */
+    virtual ~interpolate () = default;
+
+
+    /**
      * @brief Adds training data to the interpolator.
      *
      * @details This function adds training data, consisting of function values and corresponding variable values,
