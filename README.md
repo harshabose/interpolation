@@ -33,3 +33,74 @@ This file is part of a larger project aiming to provide specialised tool to auto
   ```cpp
   template <std::size_t dimension, std::size_t max_training_data_size, std::size_t mean_size> interpolate<dimension, max_training_data_size, mean_size> interpolator;
   ```
+- Add training data to the interpolator using the appropriate add_training_data method.
+- Use the eval_at function to evaluate the function at a specified point.
+
+## Example
+The following example creates a interpolator for CL (lift coeffecient) of an airfoil from angle of attack (-90deg to 90deg) and reynolds number (100,000 to 2,000,000).
+
+Following is a 3D plot representing the data collected from CFD simulations.
+
+Following is the interpolator code which allows us to find accurate estimate of CL at a new angle of attack and reynolds number.
+```cpp
+#include <fstream>
+#include <chrono>
+
+#include "interpolate.h"
+#include "nlohmann/json.hpp"
+
+struct interpolate_fixture_ {
+  interpolate_fixture_ () {
+    std::ifstream operational_file(this->json_data_path, std::ios::ate);
+
+    if (!operational_file.is_open() && operational_file.tellg() != 0) {
+      throw std::runtime_error("Could not open file for reading or it is empty: " + this->json_data_path);
+    }
+
+    operational_file.seekg(0, std::ios::beg);
+
+    const nlohmann::json json_data = nlohmann::json::parse(operational_file);
+    try {
+      this->CL = json_data.at("CL").get<std::vector<float>>();
+      this->Re = json_data.at("Re").get<std::vector<float>>();
+      this->alpha = json_data.at("alpha").get<std::vector<float>>();
+
+      if (this->CL.size() != 5000) {
+        std::cerr << "Current size is: " << this->CL.size() << std::endl;
+        throw std::runtime_error("Expected size is 5000");
+      }
+    } catch (std::exception &e) {
+      std::cerr << e.what() << std::endl;
+      std::cerr << "ERROR while parsing JSON data" << std::endl;
+      throw;
+    }
+
+    interpolator.add_training_data<5000>(this->CL, this->alpha, this->Re);
+    this->CL.clear();
+    this->Re.clear();
+    this->alpha.clear();
+  }
+
+  float get_CL_at (const float new_alpha, const float new_reynolds_number) {
+    auto start = std::chrono::high_resolution_clock::now();
+    float result = interpolator.eval_at(new_alpha, new_reynolds_number);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    std::cout << result << std::endl;
+    std::cout << "Time taken by calc interpolation: " << duration.count() << " microseconds" << std::endl;
+    return result;
+    }
+
+  std::vector<float> CL, Re, alpha;
+  const std::string json_data_path = "/Users/harsha/Desktop/Conceptual/assets/airfoil_data/naca652415_training.json";
+  CONCEPTUAL_INTERPOLATE_H::interpolate<2, 5000, 5> interpolator = CONCEPTUAL_INTERPOLATE_H::interpolate<2, 5000, 5>();
+}
+
+int main () {
+  auto test = interpolate_fixture_();
+  float new_alpha = 5.0f;
+  float new_reynolds_number = 1000000.0f;
+  test.get_CL_at(new_alpha, new_reynolds_number);
+}
+```
