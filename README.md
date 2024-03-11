@@ -22,10 +22,14 @@ This file is part of a larger project aiming to provide specialised tool to auto
 - Implements different algorithms for finding the mean of the k-nearest neighbors based on data size for efficiency
 
 ## How to Use?
+- Clone the repository into your project directory
+  ```bash
+  git clone --recursive https://github.com/harshabose/interpolation.git
+  ```
 - It is a header file, so simply include the file in your project.
   
   ```cpp
-  #include "interpolate.h"
+  #include "interpolation/interpolate.h"
   ```
 - Define the template parameters based on your specific needs.
 - Create an instance of the interpolate class:
@@ -47,8 +51,8 @@ Following is the interpolator code which allows us to find accurate estimate of 
 #include <fstream>
 #include <chrono>
 
-#include "interpolate.h"
-#include "json/include/nlohmann/json.hpp"
+#include "interpolation/interpolate.h"
+#include "interpolation/json/include/nlohmann/json.hpp"
 
 struct interpolate_fixture_ {
   interpolate_fixture_ () {
