@@ -118,7 +118,8 @@ Following is the output of the above example:
 CL: 0.892368
 Time taken to calc interpolation: 35 microseconds
 ```
-To confirm this, the CL value from a trusted source is [0.8937](http://www.airfoiltools.com/polar/details?polar=xf-naca652415-il-1000000){:target="_blank"}. The slight error can be attibuted to the fact that our data is based on openFOAM simulations and the source is based on XFoil.
+
+To confirm this, the CL value from a trusted source is <a href="http://www.airfoiltools.com/polar/details?polar=xf-naca652415-il-1000000" target="_blank">0.8937</a>. The slight error can be attibuted to the fact that our data is based on openFOAM simulations and the source is based on XFoil.
 
 ## Additional Notes
 - The code uses Eigen C++ library, which is a header-only library, but careful consideration needs to be made to the location of installation of Eigen. By default, when cloning this repo, Eigen is added to your directory. If you prefer a local Eigen build, you can change the #include path in the 'interpolate.h' file.
