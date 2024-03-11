@@ -48,7 +48,7 @@ Following is the interpolator code which allows us to find accurate estimate of 
 #include <chrono>
 
 #include "interpolate.h"
-#include "nlohmann/json.hpp"
+#include "json/include/nlohmann/json.hpp"
 
 struct interpolate_fixture_ {
   interpolate_fixture_ () {
