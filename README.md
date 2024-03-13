@@ -56,6 +56,8 @@ Following is the interpolator code which allows us to find accurate estimate of 
 #include "interpolation/interpolate.h"
 #include "interpolation/json/include/nlohmann/json.hpp"
 
+#define VERBOSITY 0  // define to 1 for detailed print statements
+
 struct interpolate_fixture_ {
   interpolate_fixture_ () {
     std::ifstream operational_file(this->json_data_path, std::ios::ate);
