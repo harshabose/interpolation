@@ -58,8 +58,10 @@ Following is the interpolator code which allows us to find accurate estimate of 
 
 #define VERBOSITY 0  // define to 1 for detailed print statements
 
+// a test fixture which properly create the interpolate class object
 struct interpolate_fixture_ {
   interpolate_fixture_ () {
+    //read from JSON file
     std::ifstream operational_file(this->json_data_path, std::ios::ate);
 
     if (!operational_file.is_open() && operational_file.tellg() != 0) {
@@ -70,6 +72,7 @@ struct interpolate_fixture_ {
 
     const nlohmann::json json_data = nlohmann::json::parse(operational_file);
     try {
+      // inset JSON data into vectors
       this->CL = json_data.at("CL").get<std::vector<float>>();
       this->Re = json_data.at("Re").get<std::vector<float>>();
       this->alpha = json_data.at("alpha").get<std::vector<float>>();
@@ -83,7 +86,7 @@ struct interpolate_fixture_ {
       std::cerr << "ERROR while parsing JSON data" << std::endl;
       throw;
     }
-
+    //add training data to interpolator
     interpolator.add_training_data<5000>(this->CL, this->alpha, this->Re);
     this->CL.clear();
     this->Re.clear();
@@ -102,7 +105,9 @@ struct interpolate_fixture_ {
   }
 
   std::vector<float> CL, Re, alpha;
+  //path to JSON file containing training data
   const std::string json_data_path = "assets/airfoil_data/naca652415_training.json";
+  //interpolate class object
   CONCEPTUAL_INTERPOLATE_H::interpolate<2, 5000, 5> interpolator = CONCEPTUAL_INTERPOLATE_H::interpolate<2, 5000, 5>();
 }
 
