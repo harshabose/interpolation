@@ -6,8 +6,16 @@
  * @date 07/03/2024
  */
 
+#define VERBOSITY 1
+
 #ifndef CONCEPTUAL_INTERPOLATE_H
 #define CONCEPTUAL_INTERPOLATE_H
+
+#if VERBOSITY
+#define VERBOSE_PRINT(x)  do { std::ostringstream oss; oss << x; std::cout << oss.str() << std::endl; } while (0)
+#else
+#define VERBOSE_PRINT(x)
+#endif
 
 #include <iostream>
 #include <vector>
@@ -18,8 +26,8 @@
 #include <queue>
 #include <utility>
 
-#include "eigen/Eigen/Core"
-#include "eigen/Eigen/Dense"
+#include "eigen3/Eigen/Core"
+#include "eigen3/Eigen/Dense"
 
 /**
  * @brief Compile-time check if the given type is a std::vector<float> or not.
@@ -86,7 +94,10 @@ public:
     /**
      * @brief Default constructor for the interpolate class.
      */
-    interpolate () = default;
+    interpolate () {
+        this->func_data = std::make_shared<Eigen::Vector<float, max_training_data_size>>();
+        this->var_data = std::make_shared<Eigen::Matrix<float, max_training_data_size, dimension>>();
+    };
 
 
     /**
@@ -124,12 +135,11 @@ public:
             throw std::runtime_error("Input Training data size exceeds max size");
         }
 
-        this->func_data.segment<current_training_size>(this->interpolated_data_size) = IN_FUNC_DATA;
-        this->var_data.block<current_training_size, dimension>(this->interpolated_data_size, 0) = IN_VAR_DATA;
+        this->func_data->template segment<current_training_size>(this->interpolated_data_size) = IN_FUNC_DATA;
+        this->var_data->template block<current_training_size, dimension>(this->interpolated_data_size, 0) = IN_VAR_DATA;
 
         this->interpolated_data_size += current_training_size;
-        if (this->interpolated_data_size == max_training_data_size)
-            std::cout << "max training data size reached. No more points are accepted" << std::endl;
+        if (this->interpolated_data_size == max_training_data_size) VERBOSE_PRINT("max training data size reached. No more points are accepted");
     }
 
 
@@ -164,11 +174,11 @@ public:
             throw std::runtime_error("Input Training data size exceeds max size");
         }
 
-        this->func_data.template segment<current_training_size>(this->interpolated_data_size) = IN_FUNC_DATA;
+        this->func_data->template segment<current_training_size>(this->interpolated_data_size) = IN_FUNC_DATA;
 
         auto add = [this] <std::size_t... i>(const var_type&... IN_VAR_DATAs_, std::index_sequence<i...>) {
             auto add_at = [this] <std::size_t i_> (const Eigen::Vector<float, current_training_size> &IN_VAR_DATA_) {
-                this->var_data.template block<current_training_size, 1>(this->interpolated_data_size, i_) = IN_VAR_DATA_;
+                this->var_data->template block<current_training_size, 1>(this->interpolated_data_size, i_) = IN_VAR_DATA_;
             };
             (add_at.template operator()<i>(IN_VAR_DATAs_),...);
         };
@@ -177,7 +187,7 @@ public:
 
         this->interpolated_data_size += current_training_size;
         if (this->interpolated_data_size == max_training_data_size)
-            std::cout << "max training data size reached. No more points are accepted" << std::endl;
+            VERBOSE_PRINT("max training data size reached. No more points are accepted");
     }
 
 
@@ -308,15 +318,81 @@ public:
         return this->eval_at(std::array<float, dimension>{std::forward<types>(IN_POINT)...});
     }
 
+    /**
+     * @brief Retrieves a shared pointer to the training points data.
+     *
+     * @details This method provides access to the training points data stored within an instance by returning a std::shared_ptr
+     * pointing to the training points data matrix. Utilizing a shared pointer ensures safe, memory-efficient handling and sharing
+     * of the training points data among different parts of the application without duplicating the data in memory. This approach
+     * is particularly useful in scenarios where multiple instances need to access or modify the same underlying training
+     * points data. It can be paired with set_ptr_trained_data to link different instances to a shared training points dataset.
+     *
+     * @return A shared pointer to the training points data matrix of the object.
+     */
+    std::shared_ptr<Eigen::Matrix<float, max_training_data_size, dimension>> get_ptr_trained_data () {
+        return this->var_data;
+    }
+
+
+    /**
+     * @brief Sets the training points data pointer to a new shared pointer.
+     *
+     * @details This method allows the current instance to point to an existing training points data set by accepting a
+     * std::shared_ptr<Eigen::Matrix> as its parameter. By setting the internal training points data pointer to the provided
+     * shared pointer, it facilitates the sharing of training points data among multiple instances, thereby promoting data
+     * consistency and memory efficiency across different components of the system. This is particularly useful for
+     * scenarios where the training points data is large or when it's beneficial for multiple instances to work on the same
+     * dataset without copying the data. This method complements get_ptr_trained_data by enabling the reassignment
+     * and sharing of training points data.
+     *
+     * @param [in] IN_POINTER A const reference to a std::shared_ptr that points to the new training points data to be used by this instance.
+     */
+    void set_ptr_trained_data (const std::shared_ptr<Eigen::Matrix<float, max_training_data_size, dimension>>& IN_POINTER) {
+        this->var_data = IN_POINTER;
+    }
+
+    /**
+     * @brief Sets the training function data pointer to a new shared pointer.
+     * 
+     * @details This method provides access to the training function data stored within an instance by returning a std::shared_ptr
+     * pointing to the training function data matrix. Utilizing a shared pointer ensures safe, memory-efficient handling and sharing
+     * of the training function data among different parts of the application without duplicating the data in memory. This approach
+     * is particularly useful in scenarios where multiple instances need to access or modify the same underlying training
+     * points data. It can be paired with set_ptr_trained_data to link different instances to a shared training function dataset.
+     * 
+     * @return A shared pointer to the training function data matrix of the object.
+     */
+    std::shared_ptr<Eigen::Matrix<float, max_training_data_size, dimension>> get_ptr_func_data () {
+        return this->func_data;
+    }
+    
+    /**
+     * @brief Sets the training function data pointer to a new shared pointer.
+     * 
+     * @details This method allows the current instance to point to an existing training function data set by accepting a
+     * std::shared_ptr<Eigen::Matrix> as its parameter. By setting the internal training function data pointer to the provided
+     * shared pointer, it facilitates the sharing of training function data among multiple instances, thereby promoting data
+     * consistency and memory efficiency across different components of the system. This is particularly useful for
+     * scenarios where the training function data is large or when it's beneficial for multiple instances to work on the same
+     * dataset without copying the data. This method complements get_ptr_trained_data by enabling the reassignment
+     * and sharing of training function data.
+     *
+     * @param [in] IN_POINTER A const reference to a std::shared_ptr that points to the new training functon data to be used
+     * by this instance.
+     */
+    void set_ptr_func_data (const std::shared_ptr<Eigen::Matrix<float, max_training_data_size, dimension>>& IN_POINTER) {
+        this->func_data = IN_POINTER;
+    }
+
 private:
     /** @brief Tracks number of training data inputted in `interpolate::func_data` and `interpolate::var_data` */
     std::size_t interpolated_data_size = 0;
 
     /** @brief Stores function values at the `interpolate::var_data` */
-    Eigen::Vector<float, max_training_data_size> func_data;
+    std::shared_ptr<Eigen::Vector<float, max_training_data_size>> func_data;
 
     /** @brief Stores training data points */
-    Eigen::Matrix<float, max_training_data_size, dimension> var_data;
+    std::shared_ptr<Eigen::Matrix<float, max_training_data_size, dimension>> var_data;
 
 
     /**
@@ -339,22 +415,23 @@ private:
      * @note This method is marked as `noexcept` for better performance optimisations.
      */
     Eigen::Matrix<float, max_training_data_size, 1>
-            calculate_distance_vector (const Eigen::Vector<float, dimension> &IN_POINT,
-                                       const Eigen::Matrix<float, max_training_data_size, dimension> &IN_MATRIX) noexcept {
-        return (((IN_POINT.transpose()).template replicate<max_training_data_size, 1>()) - IN_MATRIX).rowwise().squaredNorm();
+    calculate_distance_vector (const Eigen::Vector<float, dimension> &IN_POINT,
+                               const std::shared_ptr<Eigen::Matrix<float, max_training_data_size, dimension>> &IN_MATRIX) noexcept {
+        return (((IN_POINT.transpose()).template replicate<max_training_data_size, 1>()) - *IN_MATRIX).rowwise().squaredNorm();
     }
 
 
     /**
-     * @brief Finds the mean of first `mean_size` minimum values in `IN_VALS` using Eigen::Vector::minCoeff().
-     * Other versions of this method exists.
+     * @brief Calculate the mean of the first `mean_size` elements in `IN_FUNC` based on the minimum valued indices of
+     * `IN_VALS` using Eigen::Vector::minCoeff().Other versions of this method exists.
      *
-     * @details This function calculates the mean of the first `mean_size` minimum values in the input vector @p IN_VALS.
-     * The implementation is optimised for a smaller data size (max_training_data_size), providing efficient
-     * computation with minimal memory overhead from other implementations.
+     * @details This function calculates the mean of the input vector @p IN_FUNC based on the of the first `mean_size`
+     * minimum values in @p IN_VALS using Eigen::Vector::minCoeff().. for efficient retrieval of the minimum values.
+     * The implementation is tailored for relatively small data sizes (max_training_data_size).
      *
      * @param [in, out] IN_VALS The input vector of values to find the mean of. The size should `max_training_data_size` and needs
      * to available in compile time. The IN_VALS is modified (injects NaN in places of first `mean_size` minimum values.
+     * @param [in] IN_FUNC Input vector for which the mean is calculated based on selected indices.
      *
      * @return mean of the first `mean_size` minimum values in the input vector.
      *
@@ -363,11 +440,12 @@ private:
      * @note This method is marked as `noexcept` for better performance optimisations.
      * @note This version is optimized for smaller max_training_data_size. Different versions exist for other data sizes.
      */
-    float find_mean_of_first_k_minCoeff (Eigen::Vector<float, max_training_data_size> &IN_VALS) noexcept {
+    float find_mean_of_first_k_minCoeff (Eigen::Vector<float, max_training_data_size> &IN_VALS, std::shared_ptr<Eigen::Vector<float, max_training_data_size>> &IN_FUNC) noexcept {
         float sum = 0.0f;
         Eigen::Index index_;
         for (std::size_t i = 0; i < mean_size; i++) {
-            sum += IN_VALS.minCoeff(&index_);
+            IN_VALS.minCoeff(&index_);
+            sum += (*IN_FUNC)(index_);
             IN_VALS(index_) = std::numeric_limits<float>::quiet_NaN();
         }
         return sum / static_cast<float>(mean_size);
@@ -375,28 +453,34 @@ private:
 
 
     /**
-     * @brief Finds the mean of first `mean_size` minimum values in `IN_VALS` using `std::priority_queue`.
+     * @brief Calculate the mean of the first `mean_size` elements in `IN_FUNC` based on the minimum valued indices of
+     * `IN_VALS` using a std::priority queue.
      *
-     * @details This function calculates the mean of the first `mean_size` minimum values in the input vector @p IN_VALS
-     * using a priority queue for efficient retrieval of the minimum values. The implementation is tailored
-     * for a large data sizes (max_training_data_size).
+     * @details This function calculates the mean of the input vector @p IN_FUNC based on the of the first `mean_size`
+     * minimum values in @p IN_VALS using a std::priority queue. for efficient retrieval of the minimum values.
+     * The implementation is tailored for a large data sizes (max_training_data_size).
      *
-     * @param [in] IN_VALS The input vector of values to find the mean of. The size should `max_training_data_size` and needs
-     * to available in compile time.
+     * @param [in] IN_VALS Input vector containing values for index calculations. The size should
+     * `max_training_data_size` and needs to available in compile time.
+     * @param [in] IN_FUNC Input vector for which the mean is calculated based on selected indices.
      *
-     * @return mean of the first `mean_size` minimum values in the input vector.
+     * @return The mean value of the `IN_FUNC` elements whose indices are first `mean_size` minimum valued in IN_VALS.
      *
      * @throw None
      *
-     * @note This method is marked as `noexcept` for better performance optimisations.
-     * @note This version utilises a priority queue for efficient retrieval of minimum values from a large Eigen::Vector.
+     * @note This method is marked as `noexcept` to enhance performance optimizations.
+     * @note This version utilizes a priority queue to efficiently retrieve the minimum values from a large Eigen::Vector.
      */
-    float find_mean_of_first_k_minCoeff_using_que (Eigen::Vector<float, max_training_data_size> &IN_VALS) noexcept {
+    float find_mean_of_first_k_minCoeff_using_que (Eigen::Vector<float, max_training_data_size> &IN_VALS, std::shared_ptr<Eigen::Vector<float, max_training_data_size>> &IN_FUNC) noexcept {
+        std::vector<std::size_t> indices(IN_VALS.size());
+        std::iota(indices.begin(), indices.end(), 0);
+
+        std::priority_queue que(indices.begin(), indices.end(),
+                                [&IN_VALS] (const std::size_t i , const std::size_t j) -> bool {return IN_VALS(i) < IN_VALS(j);});
+
         float sum = 0.0f;
-        std::size_t i = 0;
-        std::priority_queue que(IN_VALS.begin(), IN_VALS.end(), std::greater<>());
-        while (i++ < mean_size) {
-            sum += que.top();
+        for (std::size_t i = 0; i < mean_size; i++) {
+            sum += (*IN_FUNC)(que.top());
             que.pop();
         }
         return sum / static_cast<float>(mean_size);
@@ -414,6 +498,7 @@ private:
      * @param [in, out] IN_VALS Input vector containing values for index calculations. The size should
      * `max_training_data_size` and needs to available in compile time.
      * @param [in] IN_FUNC Input vector for which the mean is calculated based on selected indices.
+     *
      * @return The mean value of the `IN_FUNC` elements whose indices are first `mean_size` minimum valued in IN_VALS.
      *
      * @throw None
@@ -421,14 +506,14 @@ private:
      * @note This method is marked as `noexcept` for better performance optimisations.
      * @note This version utilises a std::nth_element for efficient retrieval of minimum values from a large Eigen::Vector.
      */
-    float find_mean_of_first_minCoeff_using_nth (Eigen::Vector<float, max_training_data_size> &IN_VALS, Eigen::Vector<float, max_training_data_size> &IN_FUNC) noexcept {
+    float find_mean_of_first_minCoeff_using_nth (Eigen::Vector<float, max_training_data_size> &IN_VALS, std::shared_ptr<Eigen::Vector<float, max_training_data_size>> &IN_FUNC) noexcept {
         std::vector<std::size_t> indices(IN_VALS.size());
         std::iota(indices.begin(), indices.end(), 0);
 
         std::nth_element(indices.begin(), indices.begin() + mean_size, indices.end(),
                          [&IN_VALS] (const std::size_t i , const std::size_t j) -> bool {return IN_VALS(i) < IN_VALS(j);});
 
-        return IN_FUNC(std::vector<std::size_t>(indices.begin(), indices.begin() + mean_size)).sum() / static_cast<float>(mean_size);
+        return (*IN_FUNC)(std::vector<std::size_t>(indices.begin(), indices.begin() + mean_size)).sum() / static_cast<float>(mean_size);
     }
 };
 
