@@ -58,7 +58,7 @@ Following is the interpolator code which allows us to find accurate estimate of 
 
 #define VERBOSITY 0  // define to 1 for detailed print statements
 
-// a test fixture which properly create the interpolate class object
+// a test fixture which properly creates the interpolate class object
 struct interpolate_fixture_ {
   interpolate_fixture_ () {
     //read from JSON file
