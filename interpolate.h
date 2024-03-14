@@ -292,7 +292,6 @@ public:
         }
         auto* ptr = const_cast<float*>(IN_POINT.data());
         return this->eval_at(static_cast<Eigen::Vector<float, dimension>>(Eigen::Map<Eigen::Vector<float, dimension>>(ptr)));
-//        return this->eval_at();
     }
 
 
