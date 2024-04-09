@@ -123,7 +123,7 @@ Following is the output of the above example:
 
 ```bash
 CL: 0.892368
-Time taken to calc interpolation: 35 microseconds
+Time taken to calc interpolation: 3 microseconds
 ```
 
 To confirm this, the CL value from a trusted source is [0.8937](http://www.airfoiltools.com/polar/details?polar=xf-naca652415-il-1000000). The slight error can be attibuted to the fact that our data is based on openFOAM simulations and the source is based on XFoil.
